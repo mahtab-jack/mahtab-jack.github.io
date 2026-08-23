@@ -3,10 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>Mahtab's Portfolio</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #58a6ff;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #8b949e;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #58a6ff;
+        }
+
+        .card h3 {
+            color: #58a6ff;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            word-break: break-word;
+        }
+
+        .card p {
+            color: #8b949e;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 16px;
+            flex-grow: 1;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #8b949e;
+            border-top: 1px solid #21262d;
+            padding-top: 12px;
+        }
+
+        .card a {
+            color: #58a6ff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            color: #8b949e;
+            grid-column: 1 / -1;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to mahtab-jack.github.io</h1>
-    <p>This is my new main website.</p>
+
+    <div class="container">
+        <header>
+            <h1>Mahtab Alam</h1>
+            <p>My Public GitHub Projects</p>
+        </header>
+
+        <div id="projects" class="projects-grid">
+            <div class="loading">Loading projects from GitHub...</div>
+        </div>
+    </div>
+
+    <script>
+        const username = 'mahtab-jack';
+
+        async function fetchGitHubProjects() {
+            const projectsContainer = document.getElementById('projects');
+
+            try {
+                // Fetch public repositories sorted by last updated
+                const response = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=12`);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch repositories');
+                }
+
+                const repos = await response.json();
+                projectsContainer.innerHTML = '';
+
+                // Filter out forks and the main website repo itself
+                const filteredRepos = repos.filter(repo => !repo.fork && repo.name !== `${username}.github.io`);
+
+                if (filteredRepos.length === 0) {
+                    projectsContainer.innerHTML = '<div class="loading">No repositories found.</div>';
+                    return;
+                }
+
+                filteredRepos.forEach(repo => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+
+                    const description = repo.description || 'No description provided for this repository.';
+                    const language = repo.language || 'Plain Text';
+                    const stars = repo.stargazers_count;
+
+                    card.innerHTML = `
+                        <div>
+                            <h3>${repo.name}</h3>
+                            <p>${description}</p>
+                        </div>
+                        <div class="card-footer">
+                            <span>Language: ${language}</span>
+                            <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">View Code</a>
+                        </div>
+                    `;
+
+                    projectsContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                projectsContainer.innerHTML = `<div class="loading">Error loading projects: ${error.message}</div>`;
+            }
+        }
+
+        fetchGitHubProjects();
+    </script>
 </body>
 </html>
