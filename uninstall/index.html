@@ -378,37 +378,60 @@
   </div>
 
   <script>
+    // -------------------------------------------------------------
+    // OPTION: GOOGLE FORMS INTEGRATION
+    // -------------------------------------------------------------
+    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfmIPD8B1DDusB31ehZk8-b7Q5M3Yho8GiqABn9heYM_6yU5w/formResponse';
+    const GOOGLE_ENTRY_APP = 'entry.1923996328';
+    const GOOGLE_ENTRY_VERSION = 'entry.1606692802';
+    const GOOGLE_ENTRY_REASON = 'entry.1106346464';
+    const GOOGLE_ENTRY_COMMENTS = 'entry.1117780621';
+
     // Parse URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const appParam = urlParams.get('app');
     const versionParam = urlParams.get('version');
 
-    if (appParam) {
-      const formattedName = appParam === 'clipdock' ? 'Clip Dock' : appParam;
-      document.getElementById('app-name-display').textContent = formattedName;
-      document.title = formattedName + ' - Uninstallation Feedback';
-    }
+    const appName = appParam ? (appParam === 'clipdock' ? 'Clip Dock' : appParam) : 'Clip Dock';
+    const appVersion = versionParam ? ('v' + versionParam.replace(/^v/, '')) : 'v1.0.0';
 
-    if (versionParam) {
-      document.getElementById('app-version-display').textContent = 'v' + versionParam.replace(/^v/, '');
-    }
+    document.getElementById('app-name-display').textContent = appName;
+    document.getElementById('app-version-display').textContent = appVersion;
+    document.title = appName + ' - Uninstallation Feedback';
 
-    function handleFormSubmit(event) {
+    async function handleFormSubmit(event) {
       event.preventDefault();
       
       const form = document.getElementById('uninstall-feedback-form');
+      const submitBtn = document.getElementById('submit-btn');
       const selectedReason = form.querySelector('input[name="reason"]:checked');
       const reasonValue = selectedReason ? selectedReason.value : 'Not specified';
       const commentValue = document.getElementById('feedback-text').value.trim();
 
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      if (GOOGLE_FORM_URL && GOOGLE_FORM_URL.length > 0) {
+        const formData = new FormData();
+        if (GOOGLE_ENTRY_APP) formData.append(GOOGLE_ENTRY_APP, appName);
+        if (GOOGLE_ENTRY_VERSION) formData.append(GOOGLE_ENTRY_VERSION, appVersion);
+        if (GOOGLE_ENTRY_REASON) formData.append(GOOGLE_ENTRY_REASON, reasonValue);
+        if (GOOGLE_ENTRY_COMMENTS) formData.append(GOOGLE_ENTRY_COMMENTS, commentValue);
+
+        try {
+          await fetch(GOOGLE_FORM_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+          });
+        } catch (err) {
+          console.warn('Google Form submission notice:', err);
+        }
+      }
+
       // Switch to thank you state
       document.getElementById('form-container').style.display = 'none';
       document.getElementById('success-container').style.display = 'block';
-
-      // Optional: If user wrote detailed comments, we can pre-format a GitHub issue link
-      if (commentValue.length > 0) {
-        console.log('Feedback submitted:', { reason: reasonValue, comment: commentValue });
-      }
     }
   </script>
 </body>
