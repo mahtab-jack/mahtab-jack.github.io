@@ -384,6 +384,9 @@
     <input type="hidden" name="entry.1606692802" id="gf-version" value="">
     <input type="hidden" name="entry.1106346464" id="gf-reason" value="">
     <input type="hidden" name="entry.1117780621" id="gf-comments" value="">
+    <input type="hidden" name="fvv" value="1">
+    <input type="hidden" name="pageHistory" value="0">
+    <input type="hidden" name="fbzx" value="-1965178792116424538">
   </form>
 
   <script>
@@ -431,13 +434,16 @@
         console.warn('Iframe form submit notice:', err);
       }
 
-      // 2. Also dispatch urlencoded fetch
+      // 2. Also dispatch urlencoded fetch with protocol fields
       try {
         const params = new URLSearchParams();
         params.append(GOOGLE_ENTRY_APP, appName);
         params.append(GOOGLE_ENTRY_VERSION, appVersion);
         params.append(GOOGLE_ENTRY_REASON, reasonValue);
         params.append(GOOGLE_ENTRY_COMMENTS, commentValue);
+        params.append('fvv', '1');
+        params.append('pageHistory', '0');
+        params.append('fbzx', '-1965178792116424538');
 
         fetch(GOOGLE_FORM_URL, {
           method: 'POST',
@@ -453,7 +459,7 @@
       setTimeout(() => {
         document.getElementById('form-container').style.display = 'none';
         document.getElementById('success-container').style.display = 'block';
-      }, 250);
+      }, 300);
     }
   </script>
 </body>
