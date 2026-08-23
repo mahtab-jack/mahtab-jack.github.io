@@ -377,9 +377,18 @@
     </div>
   </div>
 
+  <!-- Hidden form & iframe for guaranteed Google Forms submission -->
+  <iframe name="google-form-target" id="google-form-target" style="display:none;"></iframe>
+  <form id="google-form-hidden" action="https://docs.google.com/forms/d/e/1FAIpQLSfmIPD8B1DDusB31ehZk8-b7Q5M3Yho8GiqABn9heYM_6yU5w/formResponse" method="POST" target="google-form-target" style="display:none;">
+    <input type="hidden" name="entry.1923996328" id="gf-app" value="">
+    <input type="hidden" name="entry.1606692802" id="gf-version" value="">
+    <input type="hidden" name="entry.1106346464" id="gf-reason" value="">
+    <input type="hidden" name="entry.1117780621" id="gf-comments" value="">
+  </form>
+
   <script>
     // -------------------------------------------------------------
-    // OPTION: GOOGLE FORMS INTEGRATION
+    // GOOGLE FORMS INTEGRATION CONFIGURATION
     // -------------------------------------------------------------
     const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSfmIPD8B1DDusB31ehZk8-b7Q5M3Yho8GiqABn9heYM_6yU5w/formResponse';
     const GOOGLE_ENTRY_APP = 'entry.1923996328';
@@ -399,7 +408,7 @@
     document.getElementById('app-version-display').textContent = appVersion;
     document.title = appName + ' - Uninstallation Feedback';
 
-    async function handleFormSubmit(event) {
+    function handleFormSubmit(event) {
       event.preventDefault();
       
       const form = document.getElementById('uninstall-feedback-form');
@@ -411,27 +420,40 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Sending...';
 
-      if (GOOGLE_FORM_URL && GOOGLE_FORM_URL.length > 0) {
-        const formData = new FormData();
-        if (GOOGLE_ENTRY_APP) formData.append(GOOGLE_ENTRY_APP, appName);
-        if (GOOGLE_ENTRY_VERSION) formData.append(GOOGLE_ENTRY_VERSION, appVersion);
-        if (GOOGLE_ENTRY_REASON) formData.append(GOOGLE_ENTRY_REASON, reasonValue);
-        if (GOOGLE_ENTRY_COMMENTS) formData.append(GOOGLE_ENTRY_COMMENTS, commentValue);
-
-        try {
-          await fetch(GOOGLE_FORM_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            body: formData
-          });
-        } catch (err) {
-          console.warn('Google Form submission notice:', err);
-        }
+      // 1. Submit via hidden standard HTML form into hidden iframe (Guaranteed by browsers)
+      try {
+        document.getElementById('gf-app').value = appName;
+        document.getElementById('gf-version').value = appVersion;
+        document.getElementById('gf-reason').value = reasonValue;
+        document.getElementById('gf-comments').value = commentValue;
+        document.getElementById('google-form-hidden').submit();
+      } catch (err) {
+        console.warn('Iframe form submit notice:', err);
       }
 
+      // 2. Also dispatch urlencoded fetch
+      try {
+        const params = new URLSearchParams();
+        params.append(GOOGLE_ENTRY_APP, appName);
+        params.append(GOOGLE_ENTRY_VERSION, appVersion);
+        params.append(GOOGLE_ENTRY_REASON, reasonValue);
+        params.append(GOOGLE_ENTRY_COMMENTS, commentValue);
+
+        fetch(GOOGLE_FORM_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: params.toString()
+        }).catch(() => {});
+      } catch (_) {}
+
       // Switch to thank you state
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('success-container').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('success-container').style.display = 'block';
+      }, 250);
     }
   </script>
 </body>
