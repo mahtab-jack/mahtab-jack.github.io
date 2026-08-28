@@ -19,6 +19,10 @@ import Terminal from '../Programs/Terminal';
 import Paint from '../Programs/Paint';
 import SystemProperties from '../Programs/SystemProperties';
 import RecycleBin from '../Programs/RecycleBin';
+import MediaPlayer from '../Programs/MediaPlayer';
+import PhotosFolder from '../Programs/PhotosFolder';
+import ImageViewer from '../Programs/ImageViewer';
+import VideoPlayer from '../Programs/VideoPlayer';
 import { ProgramIcon } from '../Icons/ProgramIcon';
 import './Desktop.css';
 
@@ -33,6 +37,7 @@ interface DesktopProps {
   onMoveWindow: (id: string, x: number, y: number) => void;
   onResizeWindow: (id: string, w: number, h: number, x?: number, y?: number) => void;
   onToggleMinimize: (id: string) => void;
+  onLockScreen?: () => void;
 }
 
 interface SelectionBox {
@@ -53,14 +58,42 @@ export default function Desktop({
   onMoveWindow,
   onResizeWindow,
   onToggleMinimize,
+  onLockScreen,
 }: DesktopProps) {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: MenuItem[] } | null>(null);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
-  const [wallpaper, setWallpaper] = useState<'teal' | 'navy' | 'matrix'>('teal');
+  // Default to user's custom wallpaper: public/files/wallpaper.jpg
+  const [wallpaper, setWallpaper] = useState<'custom' | 'teal' | 'navy' | 'matrix'>('custom');
   const desktopAreaRef = useRef<HTMLDivElement>(null);
 
   function getProgramContent(win: WindowState) {
     switch (win.programId) {
+      case 'terminal': return <Terminal />;
+      case 'music': return <MediaPlayer />;
+      case 'photos':
+        return (
+          <PhotosFolder
+            onOpenPhoto={(photo) => {
+              const viewerProg = PROGRAMS.find(p => p.id === 'image-viewer');
+              if (viewerProg) {
+                onOpenProgram(viewerProg, {
+                  initialPhotoId: photo.id,
+                  title: photo.name,
+                  src: photo.src,
+                });
+              }
+            }}
+          />
+        );
+      case 'image-viewer':
+        return (
+          <ImageViewer
+            initialPhotoId={win.initialData?.initialPhotoId}
+            initialSrc={win.initialData?.src}
+            initialTitle={win.initialData?.title}
+          />
+        );
+      case 'video': return <VideoPlayer />;
       case 'about': return <AboutMe />;
       case 'projects': return <Projects />;
       case 'skills': return <Skills />;
@@ -70,7 +103,6 @@ export default function Desktop({
       case 'ie': return <InternetExplorer initialUrl={win.initialData?.url} />;
       case 'notepad': return <Notepad initialText={win.initialData?.text} documentTitle={win.initialData?.title} />;
       case 'calculator': return <Calculator />;
-      case 'terminal': return <Terminal />;
       case 'paint': return <Paint />;
       case 'properties': return <SystemProperties />;
       case 'recycle': return <RecycleBin />;
@@ -97,7 +129,8 @@ export default function Desktop({
       {
         label: 'Change Wallpaper',
         submenu: [
-          { label: 'Classic Teal (Default)', onClick: () => setWallpaper('teal') },
+          { label: 'Custom Wallpaper (Default)', onClick: () => setWallpaper('custom') },
+          { label: 'Classic Teal', onClick: () => setWallpaper('teal') },
           { label: 'Windows Navy', onClick: () => setWallpaper('navy') },
           { label: 'Retro Matrix', onClick: () => setWallpaper('matrix') },
         ],
@@ -105,7 +138,6 @@ export default function Desktop({
       {
         label: 'Refresh',
         onClick: () => {
-          // Play visual flicker
           if (desktopAreaRef.current) {
             desktopAreaRef.current.style.opacity = '0.7';
             setTimeout(() => {
@@ -137,6 +169,10 @@ export default function Desktop({
         ],
       },
       { separator: true, label: '' },
+      {
+        label: 'Lock Computer (Welcome Screen)',
+        onClick: onLockScreen,
+      },
       {
         label: 'Properties',
         icon: <ProgramIcon iconId="properties" size={16} />,
@@ -175,7 +211,6 @@ export default function Desktop({
     setSelectionBox(null);
   };
 
-  // Calculate selection box geometry
   const boxStyle = selectionBox ? {
     left: Math.min(selectionBox.startX, selectionBox.currentX),
     top: Math.min(selectionBox.startY, selectionBox.currentY),
@@ -204,7 +239,7 @@ export default function Desktop({
 
         {/* Desktop Icon Grid */}
         <div className="desktop-icons">
-          {PROGRAMS.map(prog => (
+          {PROGRAMS.filter(p => p.id !== 'image-viewer').map(prog => (
             <DesktopIcon
               key={prog.id}
               iconId={prog.iconId}
@@ -249,6 +284,7 @@ export default function Desktop({
         onToggleMinimize={onToggleMinimize}
         onFocusWindow={onFocusWindow}
         onOpenProgram={onOpenProgram}
+        onLockScreen={onLockScreen}
       />
     </div>
   );

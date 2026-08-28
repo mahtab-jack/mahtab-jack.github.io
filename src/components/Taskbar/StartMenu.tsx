@@ -7,9 +7,10 @@ import './StartMenu.css';
 interface StartMenuProps {
   onOpenProgram: (program: ProgramDefinition, initialData?: any) => void;
   onClose: () => void;
+  onLockScreen?: () => void;
 }
 
-export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
+export default function StartMenu({ onOpenProgram, onClose, onLockScreen }: StartMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
 
@@ -34,7 +35,7 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
   };
 
   const handleRun = () => {
-    const cmd = window.prompt('Type the name of a program, folder, or document, and Windows will open it for you.\n\nOpen:', 'about');
+    const cmd = window.prompt('Type the name of a program, folder, or document, and Windows will open it for you.\n\nOpen:', 'terminal');
     if (cmd) {
       const normalized = cmd.trim().toLowerCase().replace('.exe', '');
       const prog = PROGRAMS.find(p => p.id.toLowerCase().includes(normalized) || p.title.toLowerCase().includes(normalized));
@@ -45,13 +46,6 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
       }
       onClose();
     }
-  };
-
-  const handleShutDown = () => {
-    if (window.confirm('Are you sure you want to restart Windows 95?')) {
-      window.location.reload();
-    }
-    onClose();
   };
 
   return (
@@ -76,7 +70,25 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
 
           {activeSubmenu === 'programs' && (
             <div className="start-submenu" onMouseLeave={() => setActiveSubmenu(null)}>
-              {/* Accessories Nested */}
+              {/* Media programs */}
+              <div className="start-menu-item" onClick={() => handleItemClick('music')}>
+                <span className="start-menu-item-icon"><ProgramIcon iconId="music" size={20} /></span>
+                <span className="start-menu-item-label">Media Player (SadLofi)</span>
+              </div>
+              <div className="start-menu-item" onClick={() => handleItemClick('photos')}>
+                <span className="start-menu-item-icon"><ProgramIcon iconId="photos" size={20} /></span>
+                <span className="start-menu-item-label">My Photos</span>
+              </div>
+              <div className="start-menu-item" onClick={() => handleItemClick('video')}>
+                <span className="start-menu-item-icon"><ProgramIcon iconId="video" size={20} /></span>
+                <span className="start-menu-item-label">Wildlife Video.mp4</span>
+              </div>
+              <div className="start-menu-separator" />
+              {/* Accessories */}
+              <div className="start-menu-item" onClick={() => handleItemClick('terminal')}>
+                <span className="start-menu-item-icon"><ProgramIcon iconId="terminal" size={20} /></span>
+                <span className="start-menu-item-label">MS-DOS Prompt</span>
+              </div>
               <div className="start-menu-item" onClick={() => handleItemClick('notepad')}>
                 <span className="start-menu-item-icon"><ProgramIcon iconId="notepad" size={20} /></span>
                 <span className="start-menu-item-label">Notepad</span>
@@ -89,11 +101,8 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
                 <span className="start-menu-item-icon"><ProgramIcon iconId="calculator" size={20} /></span>
                 <span className="start-menu-item-label">Calculator</span>
               </div>
-              <div className="start-menu-item" onClick={() => handleItemClick('terminal')}>
-                <span className="start-menu-item-icon"><ProgramIcon iconId="terminal" size={20} /></span>
-                <span className="start-menu-item-label">MS-DOS Prompt</span>
-              </div>
               <div className="start-menu-separator" />
+              {/* Portfolio */}
               <div className="start-menu-item" onClick={() => handleItemClick('about')}>
                 <span className="start-menu-item-icon"><ProgramIcon iconId="mycomputer" size={20} /></span>
                 <span className="start-menu-item-label">About Me.exe</span>
@@ -130,45 +139,12 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
           <span className="start-menu-item-label">Internet Explorer</span>
         </div>
 
-        {/* Documents */}
-        <div
-          className="start-menu-item has-sub"
-          onMouseEnter={() => setActiveSubmenu('documents')}
-        >
-          <span className="start-menu-item-icon">
-            <ProgramIcon iconId="notepad" size={24} />
-          </span>
-          <span className="start-menu-item-label"><u>D</u>ocuments</span>
-          <span className="start-menu-item-arrow">&#x25B8;</span>
-
-          {activeSubmenu === 'documents' && (
-            <div className="start-submenu" onMouseLeave={() => setActiveSubmenu(null)}>
-              <div className="start-menu-item" onClick={() => handleItemClick('notepad', { title: 'README.txt', text: 'Hey there! I\'m Mahtab Jack (Mahtab Alam), a developer from Bihar, India.\n\nPrimary Stack: Flutter, Dart, React, TypeScript.\nBlog: https://blogthread.in/' })}>
-                <span className="start-menu-item-icon"><ProgramIcon iconId="notepad" size={18} /></span>
-                <span className="start-menu-item-label">README.txt</span>
-              </div>
-              <div className="start-menu-item" onClick={() => handleItemClick('notepad')}>
-                <span className="start-menu-item-icon"><ProgramIcon iconId="notepad" size={18} /></span>
-                <span className="start-menu-item-label">Saved Notes...</span>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Settings / System Properties */}
         <div className="start-menu-item" onClick={() => handleItemClick('properties')}>
           <span className="start-menu-item-icon">
             <ProgramIcon iconId="properties" size={24} />
           </span>
           <span className="start-menu-item-label"><u>S</u>ettings (Properties)</span>
-        </div>
-
-        {/* Help */}
-        <div className="start-menu-item" onClick={() => handleItemClick('about')}>
-          <span className="start-menu-item-icon">
-            <ProgramIcon iconId="mycomputer" size={24} />
-          </span>
-          <span className="start-menu-item-label"><u>H</u>elp & About</span>
         </div>
 
         {/* Run */}
@@ -181,8 +157,28 @@ export default function StartMenu({ onOpenProgram, onClose }: StartMenuProps) {
 
         <div className="start-menu-separator" />
 
+        {/* Lock Screen / Log Off */}
+        <div
+          className="start-menu-item"
+          onClick={() => {
+            onLockScreen?.();
+            onClose();
+          }}
+        >
+          <span className="start-menu-item-icon">
+            <span style={{ fontSize: 16 }}>&#x1F512;</span>
+          </span>
+          <span className="start-menu-item-label"><u>L</u>og Off (Lock Screen)...</span>
+        </div>
+
         {/* Shut Down */}
-        <div className="start-menu-item" onClick={handleShutDown}>
+        <div
+          className="start-menu-item"
+          onClick={() => {
+            if (window.confirm('Restart Windows?')) window.location.reload();
+            onClose();
+          }}
+        >
           <span className="start-menu-item-icon">
             <ProgramIcon iconId="win95" size={20} />
           </span>

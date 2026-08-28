@@ -26,8 +26,8 @@ function computeInitialPositionAndSize(
 
   // Generous left margin (110px) so desktop icons on the left are completely visible!
   const leftBase = 110;
-  const topBase = 40;
-  const offset = 26;
+  const topBase = 30;
+  const offset = 30;
 
   const maxAvailableWidth = window.innerWidth - leftBase - 20;
   const width = Math.min(program.defaultSize.width, maxAvailableWidth);
@@ -50,38 +50,62 @@ export function useWindowManager() {
   const [windows, setWindows] = useState<WindowState[]>([]);
   const windowIdCounter = useRef(0);
 
-  // Auto-open About Me on initial load
+  // Auto-open MS-DOS Terminal and Music Player on initial desktop load
   useEffect(() => {
-    const aboutProg = PROGRAMS.find(p => p.id === 'about');
-    if (aboutProg && windows.length === 0 && windowIdCounter.current === 0) {
-      windowIdCounter.current++;
-      const { position, size, minSize } = computeInitialPositionAndSize(aboutProg, 0);
-      setWindows([
-        {
+    if (windows.length === 0 && windowIdCounter.current === 0) {
+      const initialWindows: WindowState[] = [];
+
+      // 1. MS-DOS Terminal
+      const terminalProg = PROGRAMS.find(p => p.id === 'terminal');
+      if (terminalProg) {
+        windowIdCounter.current++;
+        const { position, size, minSize } = computeInitialPositionAndSize(terminalProg, 0);
+        initialWindows.push({
           id: `win-${windowIdCounter.current}`,
-          programId: aboutProg.id,
-          title: aboutProg.title,
-          iconId: aboutProg.iconId,
-          position,
+          programId: terminalProg.id,
+          title: terminalProg.title,
+          iconId: terminalProg.iconId,
+          position: { x: position.x, y: position.y },
           size,
           minSize,
           zIndex: ++nextZIndex,
           isMinimized: false,
           isMaximized: false,
-        },
-      ]);
+        });
+      }
+
+      // 2. Media Player (SadLofi.m4a)
+      const musicProg = PROGRAMS.find(p => p.id === 'music');
+      if (musicProg && window.innerWidth >= 800) {
+        windowIdCounter.current++;
+        const { size, minSize } = computeInitialPositionAndSize(musicProg, 1);
+        initialWindows.push({
+          id: `win-${windowIdCounter.current}`,
+          programId: musicProg.id,
+          title: musicProg.title,
+          iconId: musicProg.iconId,
+          position: { x: Math.max(140, window.innerWidth - size.width - 30), y: 30 },
+          size,
+          minSize,
+          zIndex: ++nextZIndex,
+          isMinimized: false,
+          isMaximized: false,
+        });
+      }
+
+      setWindows(initialWindows);
     }
   }, []);
 
   const openWindow = useCallback((program: ProgramDefinition, initialData?: any) => {
     setWindows(prev => {
-      // If already open (and not notepad new instance), focus it and unminimize
-      const existing = prev.find(w => w.programId === program.id && program.id !== 'notepad');
+      // If already open (and not notepad or photo viewer), focus it and unminimize
+      const existing = prev.find(w => w.programId === program.id && !['notepad', 'image-viewer'].includes(program.id));
       if (existing) {
         nextZIndex++;
         return prev.map(w =>
           w.id === existing.id
-            ? { ...w, zIndex: nextZIndex, isMinimized: false }
+            ? { ...w, zIndex: nextZIndex, isMinimized: false, initialData: initialData || w.initialData }
             : w
         );
       }
@@ -91,7 +115,7 @@ export function useWindowManager() {
       const newWindow: WindowState = {
         id: `win-${windowIdCounter.current}`,
         programId: program.id,
-        title: program.title,
+        title: initialData?.title || program.title,
         iconId: program.iconId,
         position,
         size,

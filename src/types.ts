@@ -34,12 +34,44 @@ export interface ProgramDefinition {
   iconId: string;
   defaultSize: WindowSize;
   minSize: WindowSize;
-  category?: 'main' | 'accessories' | 'system';
+  category?: 'main' | 'accessories' | 'media' | 'system';
   isExternal?: boolean;
   externalUrl?: string;
 }
 
 export const PROGRAMS: ProgramDefinition[] = [
+  {
+    id: 'terminal',
+    title: 'MS-DOS Prompt',
+    iconId: 'terminal',
+    defaultSize: { width: 620, height: 420 },
+    minSize: { width: 360, height: 260 },
+    category: 'main',
+  },
+  {
+    id: 'music',
+    title: 'Media Player (SadLofi)',
+    iconId: 'music',
+    defaultSize: { width: 440, height: 380 },
+    minSize: { width: 320, height: 280 },
+    category: 'media',
+  },
+  {
+    id: 'photos',
+    title: 'My Photos',
+    iconId: 'photos',
+    defaultSize: { width: 600, height: 460 },
+    minSize: { width: 360, height: 300 },
+    category: 'media',
+  },
+  {
+    id: 'video',
+    title: 'Wildlife Video.mp4',
+    iconId: 'video',
+    defaultSize: { width: 620, height: 460 },
+    minSize: { width: 380, height: 320 },
+    category: 'media',
+  },
   {
     id: 'about',
     title: 'About Me.exe',
@@ -121,12 +153,12 @@ export const PROGRAMS: ProgramDefinition[] = [
     category: 'accessories',
   },
   {
-    id: 'terminal',
-    title: 'MS-DOS Prompt',
-    iconId: 'terminal',
-    defaultSize: { width: 600, height: 400 },
-    minSize: { width: 360, height: 260 },
-    category: 'accessories',
+    id: 'image-viewer',
+    title: 'Windows Picture Viewer',
+    iconId: 'photos',
+    defaultSize: { width: 640, height: 500 },
+    minSize: { width: 380, height: 320 },
+    category: 'media',
   },
   {
     id: 'properties',

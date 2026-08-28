@@ -20,6 +20,14 @@
 }
 
 /* --- Wallpapers --- */
+.wallpaper-custom {
+  background-color: #000000;
+  background-image: url('./files/wallpaper.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .wallpaper-teal {
   background-color: #008080;
   background-image:
@@ -52,8 +60,8 @@
 /* --- Selection Marquee Box --- */
 .desktop-selection-box {
   position: fixed;
-  border: 1px dotted #000080;
-  background: rgba(0, 0, 128, 0.2);
+  border: 1px dotted #ffffff;
+  background: rgba(0, 80, 200, 0.3);
   pointer-events: none;
   z-index: 9999;
 }
@@ -66,7 +74,7 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
   max-height: calc(100% - 24px);
   align-content: flex-start;
   z-index: 1;

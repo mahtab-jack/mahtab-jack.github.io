@@ -44,6 +44,13 @@
   outline: none;
 }
 
+.toolbar-sep {
+  width: 1px;
+  height: 16px;
+  background: #808080;
+  margin: 0 4px;
+}
+
 /* --- Address bar --- */
 .program-address-bar {
   display: flex;
@@ -164,10 +171,6 @@
   color: #ff0000;
 }
 
-.program-body a:visited {
-  color: #800080;
-}
-
 /* --- Buttons --- */
 .btn-retro {
   display: inline-block;
@@ -209,6 +212,308 @@
 
 .btn-retro.accent:hover {
   background: #1084d0;
+}
+
+/* =============================================
+   WINDOWS MEDIA PLAYER (MUSIC)
+   ============================================= */
+
+.media-player-container {
+  background: #c0c0c0;
+}
+
+.media-player-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.media-screen {
+  background: #000000;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.media-screen-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.media-track-title {
+  color: #00ff00;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.media-track-artist {
+  color: #a0ffa0;
+  font-size: 11px;
+}
+
+.media-visualizer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 3px;
+  height: 50px;
+  padding: 2px;
+  background: #001500;
+  border: 1px solid #004400;
+}
+
+.viz-bar {
+  flex: 1;
+  background: linear-gradient(to top, #00aa00 0%, #00ff00 70%, #ffff00 90%, #ff0000 100%);
+  transition: height 0.1s ease-out;
+  min-height: 4px;
+}
+
+.media-time-readout {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  color: #00ff00;
+}
+
+.media-seek-bar-container {
+  display: flex;
+}
+
+.media-range-slider {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #000080;
+}
+
+.media-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.media-ctrl-btn {
+  padding: 4px 10px;
+}
+
+.media-volume-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.volume-icon {
+  font-size: 14px;
+}
+
+.media-volume-slider {
+  width: 70px;
+  cursor: pointer;
+  accent-color: #000080;
+}
+
+.media-playlist-frame {
+  flex: 1;
+  background: #ffffff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  display: flex;
+  flex-direction: column;
+}
+
+.playlist-header {
+  background: #d0d0d0;
+  padding: 3px 6px;
+  font-weight: bold;
+  font-size: 11px;
+  border-bottom: 1px solid #808080;
+}
+
+.playlist-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.playlist-row {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+  font-size: 11px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.playlist-row:hover {
+  background: #e8e8e8;
+}
+
+.playlist-row.active {
+  background: #000080;
+  color: #ffffff;
+}
+
+.playlist-row-num {
+  width: 20px;
+  font-weight: bold;
+}
+
+.playlist-row-name {
+  flex: 1;
+}
+
+.playlist-row-dur {
+  font-family: "Courier New", Courier, monospace;
+}
+
+/* =============================================
+   VIDEO PLAYER
+   ============================================= */
+
+.video-player-container {
+  background: #c0c0c0;
+}
+
+.video-viewport-frame {
+  flex: 1;
+  background: #000;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.win-video-element {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+}
+
+.video-controls-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  background: #c0c0c0;
+}
+
+.video-time-text {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* =============================================
+   PHOTOS FOLDER & IMAGE VIEWER
+   ============================================= */
+
+.photos-folder-container {
+  background: #c0c0c0;
+}
+
+.photos-grid-body {
+  flex: 1;
+  background: #ffffff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  box-shadow: inset 1px 1px 0 #404040;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  overflow: auto;
+}
+
+.photo-thumb-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.photo-thumb-card:hover {
+  background: #eef4ff;
+  border-color: #70a0ff;
+}
+
+.photo-thumb-frame {
+  width: 110px;
+  height: 90px;
+  border: 1px solid #808080;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.photo-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photo-thumb-name {
+  font-size: 11px;
+  text-align: center;
+  word-break: break-all;
+  line-height: 1.2;
+}
+
+.photo-thumb-meta {
+  font-size: 10px;
+  color: #808080;
+}
+
+.image-viewer-container {
+  background: #c0c0c0;
+}
+
+.image-viewer-viewport {
+  flex: 1;
+  background: #505050;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.image-viewer-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.image-viewer-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background: #c0c0c0;
+  border-top: 1px solid #808080;
 }
 
 /* =============================================
@@ -878,9 +1183,9 @@
 }
 
 .project-row-icon {
-  font-size: 24px;
   flex-shrink: 0;
   margin-top: 2px;
+  font-size: 24px;
 }
 
 .project-row-info {

@@ -1,0 +1,263 @@
+/* =============================================
+   WINDOWS XP WELCOME / LOCK SCREEN
+   ============================================= */
+
+.lockscreen-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10000000;
+  display: flex;
+  flex-direction: column;
+  background: #5a7edc;
+  background: radial-gradient(circle at 10% 20%, #769ff0 0%, #3a60bf 50%, #204090 100%);
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Top & Bottom Accent Bars */
+.lockscreen-header-bar {
+  height: 60px;
+  background: linear-gradient(to bottom, #002275, #003399);
+  border-bottom: 2px solid #ffcc00;
+  flex-shrink: 0;
+}
+
+.lockscreen-footer-bar {
+  height: 60px;
+  background: linear-gradient(to bottom, #003399, #001a66);
+  border-top: 2px solid #ffcc00;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.lockscreen-shutdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.lockscreen-shutdown-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.shutdown-icon {
+  background: #cc0000;
+  color: #fff;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1px solid #fff;
+}
+
+/* Main Split View */
+.lockscreen-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 40px;
+  gap: 32px;
+}
+
+/* Left Section: Logo & Instructions */
+.lockscreen-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  padding-right: 20px;
+}
+
+.lockscreen-logo-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.xp-logo-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.xp-ms-text {
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.xp-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.xp-windows-text {
+  font-family: "Franklin Gothic Medium", "Arial Black", Impact, sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.xp-badge {
+  font-family: "Franklin Gothic Medium", "Segoe UI", Arial, sans-serif;
+  font-size: 26px;
+  font-weight: bold;
+  color: #ff8833;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.lockscreen-instruction-text {
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Center Divider */
+.lockscreen-divider {
+  width: 2px;
+  height: 240px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 20%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.4) 80%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+/* Right Section: User Login Box */
+.lockscreen-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 20px;
+}
+
+.lockscreen-user-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(to right, rgba(0, 40, 140, 0.65), rgba(0, 80, 200, 0.3) 80%, transparent 100%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-left: 3px solid #ffcc00;
+  border-radius: 8px;
+  padding: 12px 24px 12px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 320px;
+}
+
+.lockscreen-user-card:hover,
+.lockscreen-user-card:focus {
+  background: linear-gradient(to right, rgba(0, 60, 180, 0.85), rgba(0, 110, 240, 0.5) 80%, transparent 100%);
+  border-color: rgba(255, 255, 255, 0.6);
+  border-left: 3px solid #ffff00;
+  box-shadow: 0 0 16px rgba(0, 150, 255, 0.5);
+  transform: translateX(4px);
+  outline: none;
+}
+
+.lockscreen-user-card.logging-in {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.lockscreen-avatar-frame {
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  background: #000;
+  flex-shrink: 0;
+}
+
+.lockscreen-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.lockscreen-user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.lockscreen-username {
+  font-family: "Franklin Gothic Medium", "Segoe UI", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.lockscreen-user-status {
+  font-size: 11px;
+  color: #d0e0ff;
+  margin-top: 2px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .lockscreen-main {
+    flex-direction: column;
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .lockscreen-left {
+    align-items: center;
+    text-align: center;
+    padding-right: 0;
+  }
+
+  .lockscreen-divider {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      transparent 100%
+    );
+  }
+
+  .lockscreen-right {
+    align-items: center;
+    padding-left: 0;
+  }
+
+  .lockscreen-user-card {
+    width: 280px;
+  }
+}

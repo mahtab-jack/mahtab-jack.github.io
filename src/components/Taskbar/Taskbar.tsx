@@ -12,6 +12,7 @@ interface TaskbarProps {
   onToggleMinimize: (id: string) => void;
   onFocusWindow: (id: string) => void;
   onOpenProgram: (program: ProgramDefinition) => void;
+  onLockScreen?: () => void;
 }
 
 export default function Taskbar({
@@ -20,6 +21,7 @@ export default function Taskbar({
   onToggleMinimize,
   onFocusWindow,
   onOpenProgram,
+  onLockScreen,
 }: TaskbarProps) {
   const [showStart, setShowStart] = useState(false);
   const [clock, setClock] = useState('');
@@ -59,6 +61,7 @@ export default function Taskbar({
             setShowStart(false);
           }}
           onClose={() => setShowStart(false)}
+          onLockScreen={onLockScreen}
         />
       )}
 
@@ -80,7 +83,7 @@ export default function Taskbar({
 
         {/* Quick launch icons */}
         <div className="taskbar-quick-launch">
-          {PROGRAMS.filter(p => ['ie', 'projects', 'notepad', 'terminal'].includes(p.id)).map(prog => (
+          {PROGRAMS.filter(p => ['terminal', 'music', 'photos', 'ie', 'notepad'].includes(p.id)).map(prog => (
             <button
               key={prog.id}
               className="quick-launch-btn"
@@ -114,7 +117,15 @@ export default function Taskbar({
 
         {/* System tray with speaker icon & clock */}
         <div className="taskbar-tray">
-          <span className="tray-sound-icon" title="Audio: Ready">
+          <span
+            className="tray-sound-icon"
+            title="Music Player (SadLofi)"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              const mp = PROGRAMS.find(p => p.id === 'music');
+              if (mp) onOpenProgram(mp);
+            }}
+          >
             <SoundIcon size={14} />
           </span>
           <span className="tray-clock">{clock}</span>
