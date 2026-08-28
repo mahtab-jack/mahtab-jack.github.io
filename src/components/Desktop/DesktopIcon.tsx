@@ -1,41 +1,39 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import { ProgramIcon } from '../Icons/ProgramIcon';
 import './DesktopIcon.css';
 
 interface DesktopIconProps {
-  icon: string;
+  iconId: string;
   label: string;
-  onDoubleClick: () => void;
+  onClick: () => void;
+  onContextMenu?: (e: React.MouseEvent) => void;
 }
 
-export default function DesktopIcon({ icon, label, onDoubleClick }: DesktopIconProps) {
-  const [selected, setSelected] = useState(false);
-  const lastClickTimeRef = useRef(0);
+export default function DesktopIcon({
+  iconId,
+  label,
+  onClick,
+  onContextMenu,
+}: DesktopIconProps) {
+  const [active, setActive] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const now = Date.now();
-    const isTouch = window.matchMedia('(pointer: coarse)').matches;
-
-    // On touch screens or fast double-tap (< 400ms) or clicking already selected icon
-    if (isTouch || (selected && now - lastClickTimeRef.current < 500)) {
-      onDoubleClick();
-      setSelected(false);
-      return;
-    }
-
-    lastClickTimeRef.current = now;
-    setSelected(true);
+    setActive(true);
+    onClick();
+    setTimeout(() => setActive(false), 200);
   };
 
   return (
     <button
-      className={`desktop-icon ${selected ? 'selected' : ''}`}
-      onDoubleClick={onDoubleClick}
+      className={`desktop-icon ${active ? 'selected' : ''}`}
       onClick={handleClick}
-      onBlur={() => setSelected(false)}
+      onContextMenu={onContextMenu}
       aria-label={`Open ${label}`}
     >
-      <div className="desktop-icon-img">{icon}</div>
+      <div className="desktop-icon-img">
+        <ProgramIcon iconId={iconId} size={36} />
+      </div>
       <span className="desktop-icon-label">{label}</span>
     </button>
   );

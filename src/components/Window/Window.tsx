@@ -1,7 +1,8 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import type { WindowState } from '../../types';
 import { useDraggable } from '../../hooks/useDraggable';
 import { useResizable } from '../../hooks/useResizable';
+import { ProgramIcon } from '../Icons/ProgramIcon';
 import './Window.css';
 
 interface WindowProps {
@@ -88,7 +89,9 @@ export default function Window({
         onDoubleClick={() => onMaximize(win.id)}
       >
         <div className="win-title-left">
-          <span className="win-title-icon">{win.icon}</span>
+          <span className="win-title-icon">
+            <ProgramIcon iconId={win.iconId} size={16} />
+          </span>
           <span className="win-title-text">{win.title}</span>
         </div>
         <div className="win-title-buttons">

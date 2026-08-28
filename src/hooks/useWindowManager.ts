@@ -24,15 +24,20 @@ function computeInitialPositionAndSize(
     };
   }
 
-  const base = 50;
-  const offset = 30;
-  const width = Math.min(program.defaultSize.width, window.innerWidth - 40);
+  // Generous left margin (110px) so desktop icons on the left are completely visible!
+  const leftBase = 110;
+  const topBase = 40;
+  const offset = 26;
+
+  const maxAvailableWidth = window.innerWidth - leftBase - 20;
+  const width = Math.min(program.defaultSize.width, maxAvailableWidth);
   const height = Math.min(program.defaultSize.height, window.innerHeight - TASKBAR_HEIGHT - 40);
-  const maxX = Math.max(20, window.innerWidth - width - 20);
+
+  const maxX = Math.max(leftBase, window.innerWidth - width - 20);
   const maxY = Math.max(20, window.innerHeight - TASKBAR_HEIGHT - height - 20);
 
-  const x = Math.min(base + (index * offset) % 240, maxX);
-  const y = Math.min(base + (index * offset) % 180, maxY);
+  const x = Math.min(leftBase + (index * offset) % 200, maxX);
+  const y = Math.min(topBase + (index * offset) % 160, maxY);
 
   return {
     position: { x, y },
@@ -56,7 +61,7 @@ export function useWindowManager() {
           id: `win-${windowIdCounter.current}`,
           programId: aboutProg.id,
           title: aboutProg.title,
-          icon: aboutProg.icon,
+          iconId: aboutProg.iconId,
           position,
           size,
           minSize,
@@ -68,15 +73,10 @@ export function useWindowManager() {
     }
   }, []);
 
-  const openWindow = useCallback((program: ProgramDefinition) => {
-    if (program.isExternal && program.externalUrl) {
-      window.open(program.externalUrl, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
+  const openWindow = useCallback((program: ProgramDefinition, initialData?: any) => {
     setWindows(prev => {
-      // If already open, focus it and unminimize
-      const existing = prev.find(w => w.programId === program.id);
+      // If already open (and not notepad new instance), focus it and unminimize
+      const existing = prev.find(w => w.programId === program.id && program.id !== 'notepad');
       if (existing) {
         nextZIndex++;
         return prev.map(w =>
@@ -92,13 +92,14 @@ export function useWindowManager() {
         id: `win-${windowIdCounter.current}`,
         programId: program.id,
         title: program.title,
-        icon: program.icon,
+        iconId: program.iconId,
         position,
         size,
         minSize,
         zIndex: ++nextZIndex,
         isMinimized: false,
         isMaximized: false,
+        initialData,
       };
       return [...prev, newWindow];
     });

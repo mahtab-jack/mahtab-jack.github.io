@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { WindowState, ProgramDefinition } from '../../types';
 import { TASKBAR_HEIGHT, PROGRAMS } from '../../types';
+import { Win95LogoIcon, SoundIcon } from '../Icons/Win95Icons';
+import { ProgramIcon } from '../Icons/ProgramIcon';
 import StartMenu from './StartMenu';
 import './Taskbar.css';
 
@@ -61,30 +63,32 @@ export default function Taskbar({
       )}
 
       <div className="taskbar" style={{ height: TASKBAR_HEIGHT }}>
-        {/* Start button */}
+        {/* Start button with authentic Win95 4-color logo */}
         <button
           className={`taskbar-start-btn ${showStart ? 'pressed' : ''}`}
           onClick={() => setShowStart(!showStart)}
           aria-label="Start Menu"
         >
-          <span className="start-logo">&#9776;</span>
+          <span className="start-logo">
+            <Win95LogoIcon size={16} />
+          </span>
           <span className="start-text">Start</span>
         </button>
 
         {/* Divider */}
         <div className="taskbar-divider" />
 
-        {/* Quick launch */}
+        {/* Quick launch icons */}
         <div className="taskbar-quick-launch">
-          {PROGRAMS.filter(p => !p.isExternal).slice(0, 3).map(prog => (
+          {PROGRAMS.filter(p => ['ie', 'projects', 'notepad', 'terminal'].includes(p.id)).map(prog => (
             <button
               key={prog.id}
               className="quick-launch-btn"
               onClick={() => onOpenProgram(prog)}
-              title={prog.title}
+              title={`Launch ${prog.title}`}
               aria-label={`Quick launch ${prog.title}`}
             >
-              {prog.icon}
+              <ProgramIcon iconId={prog.iconId} size={16} />
             </button>
           ))}
         </div>
@@ -100,14 +104,19 @@ export default function Taskbar({
               onClick={() => handleWindowButton(win)}
               title={win.title}
             >
-              <span className="taskbar-window-icon">{win.icon}</span>
+              <span className="taskbar-window-icon">
+                <ProgramIcon iconId={win.iconId} size={14} />
+              </span>
               <span className="taskbar-window-text">{win.title}</span>
             </button>
           ))}
         </div>
 
-        {/* System tray */}
+        {/* System tray with speaker icon & clock */}
         <div className="taskbar-tray">
+          <span className="tray-sound-icon" title="Audio: Ready">
+            <SoundIcon size={14} />
+          </span>
           <span className="tray-clock">{clock}</span>
         </div>
       </div>

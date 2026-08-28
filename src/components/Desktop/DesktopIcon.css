@@ -1,5 +1,5 @@
 /* =============================================
-   DESKTOP ICON
+   WINDOWS 95 DESKTOP ICON
    ============================================= */
 
 .desktop-icon {
@@ -16,6 +16,7 @@
   font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 0;
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 
 .desktop-icon:focus-visible {
@@ -24,32 +25,31 @@
 }
 
 .desktop-icon.selected {
-  border-color: rgba(255, 255, 255, 0.3);
-  background: rgba(0, 0, 128, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 128, 0.35);
 }
 
 .desktop-icon.selected .desktop-icon-label {
   background: #000080;
   color: #ffffff;
+  outline: 1px dotted #ffffff;
 }
 
 .desktop-icon-img {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
-  line-height: 1;
-  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.5));
 }
 
 .desktop-icon-label {
   font-size: 11px;
   color: #ffffff;
   text-align: center;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-  padding: 1px 4px;
+  text-shadow: 1px 1px 2px #000000;
+  padding: 1px 3px;
   word-break: break-word;
   line-height: 1.2;
   max-width: 72px;

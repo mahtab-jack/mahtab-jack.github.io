@@ -13,15 +13,15 @@
   box-shadow:
     inset -1px -1px 0 #404040,
     inset 1px 1px 0 #dfdfdf,
-    4px 4px 12px rgba(0, 0, 0, 0.35);
+    4px 4px 12px rgba(0, 0, 0, 0.4);
   z-index: 999999;
-  min-width: 220px;
+  min-width: 200px;
   font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* --- Side Banner --- */
 .start-menu-banner {
-  width: 28px;
+  width: 26px;
   background: linear-gradient(to top, #000080, #1084d0);
   display: flex;
   align-items: flex-end;
@@ -35,7 +35,7 @@
   text-orientation: mixed;
   transform: rotate(180deg);
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   letter-spacing: 2px;
   font-family: "Arial Black", Impact, sans-serif;
 }
@@ -47,15 +47,18 @@
 /* --- Items --- */
 .start-menu-items {
   flex: 1;
-  padding: 3px 0;
+  padding: 2px 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .start-menu-item {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  padding: 6px 12px 6px 8px;
+  padding: 4px 12px 4px 8px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -64,6 +67,7 @@
   color: #000;
   text-align: left;
   border-radius: 0;
+  user-select: none;
 }
 
 .start-menu-item:hover {
@@ -71,16 +75,9 @@
   color: #ffffff;
 }
 
-.start-menu-item:focus-visible {
-  background: #000080;
-  color: #ffffff;
-  outline: none;
-}
-
 .start-menu-item-icon {
-  font-size: 22px;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,14 +90,30 @@
 }
 
 .start-menu-item-arrow {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: auto;
+  font-size: 11px;
+  margin-left: 8px;
 }
 
 /* --- Separator --- */
 .start-menu-separator {
   height: 2px;
-  margin: 4px 4px 4px 40px;
+  margin: 3px 4px 3px 36px;
   background: linear-gradient(to bottom, #808080 0%, #808080 50%, #ffffff 50%, #ffffff 100%);
+}
+
+/* --- Cascading Submenu --- */
+.start-submenu {
+  position: absolute;
+  top: -2px;
+  left: 100%;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  box-shadow:
+    inset -1px -1px 0 #404040,
+    inset 1px 1px 0 #dfdfdf,
+    4px 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 2px;
+  min-width: 190px;
+  z-index: 1000001;
 }

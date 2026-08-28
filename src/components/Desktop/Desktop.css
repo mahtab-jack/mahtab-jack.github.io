@@ -1,5 +1,5 @@
 /* =============================================
-   DESKTOP ROOT
+   WINDOWS 95 DESKTOP
    ============================================= */
 
 .desktop-root {
@@ -7,6 +7,7 @@
   inset: 0;
   overflow: hidden;
   font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
 }
 
 .desktop-area {
@@ -14,21 +15,50 @@
   top: 0;
   left: 0;
   right: 0;
-  /* bottom is set inline via TASKBAR_HEIGHT */
   overflow: hidden;
+  transition: opacity 0.08s ease;
+}
 
-  /* Retro teal desktop wallpaper */
+/* --- Wallpapers --- */
+.wallpaper-teal {
   background-color: #008080;
   background-image:
-    linear-gradient(45deg, #007070 25%, transparent 25%),
-    linear-gradient(-45deg, #007070 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #007070 75%),
-    linear-gradient(-45deg, transparent 75%, #007070 75%);
+    linear-gradient(45deg, #007373 25%, transparent 25%),
+    linear-gradient(-45deg, #007373 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #007373 75%),
+    linear-gradient(-45deg, transparent 75%, #007373 75%);
   background-size: 4px 4px;
   background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
 }
 
-/* --- Icon grid --- */
+.wallpaper-navy {
+  background-color: #000080;
+  background-image:
+    linear-gradient(45deg, #00006e 25%, transparent 25%),
+    linear-gradient(-45deg, #00006e 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #00006e 75%),
+    linear-gradient(-45deg, transparent 75%, #00006e 75%);
+  background-size: 4px 4px;
+}
+
+.wallpaper-matrix {
+  background-color: #001100;
+  background-image:
+    linear-gradient(rgba(0, 255, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* --- Selection Marquee Box --- */
+.desktop-selection-box {
+  position: fixed;
+  border: 1px dotted #000080;
+  background: rgba(0, 0, 128, 0.2);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* --- Desktop Icon Grid --- */
 .desktop-icons {
   position: absolute;
   top: 12px;
@@ -36,7 +66,17 @@
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   max-height: calc(100% - 24px);
   align-content: flex-start;
+  z-index: 1;
+}
+
+@media (max-width: 600px) {
+  .desktop-icons {
+    flex-direction: row;
+    max-height: none;
+    max-width: 100%;
+    gap: 8px;
+  }
 }

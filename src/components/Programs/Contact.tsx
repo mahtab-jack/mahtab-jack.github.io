@@ -1,29 +1,30 @@
+import { ProgramIcon } from '../Icons/ProgramIcon';
 import './Programs.css';
 
 const CONTACTS = [
   {
-    icon: '\u{1F4BB}',
+    iconId: 'contact',
+    label: 'Email',
+    value: 'mahtabjack@gmail.com',
+    url: 'mailto:mahtabjack@gmail.com',
+  },
+  {
+    iconId: 'mycomputer',
     label: 'GitHub',
     value: 'mahtab-jack',
     url: 'https://github.com/mahtab-jack',
   },
   {
-    icon: '\u{1F426}',
-    label: 'Twitter / X',
-    value: '@mahtab_jack',
-    url: 'https://twitter.com/mahtab_jack',
-  },
-  {
-    icon: '\u{1F4DD}',
+    iconId: 'ie',
     label: 'Blog',
     value: 'blogthread.in',
     url: 'https://blogthread.in/',
   },
   {
-    icon: '\u2709',
-    label: 'Email',
-    value: 'mahtabjack@gmail.com',
-    url: 'mailto:mahtabjack@gmail.com',
+    iconId: 'properties',
+    label: 'Twitter / X',
+    value: '@mahtab_jack',
+    url: 'https://twitter.com/mahtab_jack',
   },
 ];
 
@@ -31,8 +32,8 @@ export default function Contact() {
   return (
     <div className="program-content">
       <div className="program-toolbar">
-        <span className="toolbar-item">File</span>
-        <span className="toolbar-item">Help</span>
+        <span className="toolbar-item"><u>F</u>ile</span>
+        <span className="toolbar-item"><u>H</u>elp</span>
       </div>
 
       <div className="program-body">
@@ -48,7 +49,9 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="contact-card"
             >
-              <div className="contact-card-icon">{c.icon}</div>
+              <div className="contact-card-icon">
+                <ProgramIcon iconId={c.iconId} size={32} />
+              </div>
               <div className="contact-card-label">{c.label}</div>
               <div className="contact-card-value">{c.value}</div>
             </a>
@@ -60,7 +63,7 @@ export default function Contact() {
         <div className="contact-cta">
           <div className="construction-stripe" />
           <div className="cta-inner">
-            <strong>Let's Build Something Together!</strong>
+            <strong style={{ display: 'block', marginBottom: 4 }}>Let's Build Something Together!</strong>
             <p>Interested in collaborating? Have a project idea? Don't be a stranger -- reach out!</p>
           </div>
           <div className="construction-stripe" />
