@@ -1,0 +1,56 @@
+/* =============================================
+   DESKTOP ICON
+   ============================================= */
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 76px;
+  padding: 4px 2px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  outline: none;
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  border-radius: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.desktop-icon:focus-visible {
+  outline: 1px dotted #ffffff;
+  outline-offset: -1px;
+}
+
+.desktop-icon.selected {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 128, 0.25);
+}
+
+.desktop-icon.selected .desktop-icon-label {
+  background: #000080;
+  color: #ffffff;
+}
+
+.desktop-icon-img {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.4));
+}
+
+.desktop-icon-label {
+  font-size: 11px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  padding: 1px 4px;
+  word-break: break-word;
+  line-height: 1.2;
+  max-width: 72px;
+}

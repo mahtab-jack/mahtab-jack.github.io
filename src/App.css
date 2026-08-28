@@ -1,0 +1,35 @@
+/* =============================================
+   GLOBAL RESET & BASE STYLES
+   ============================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  color: #000;
+  background: #008080;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+::selection {
+  background: #000080;
+  color: #ffffff;
+}
+
+/* Prevent text selection while dragging */
+.win95-window.dragging,
+.win95-window.dragging * {
+  user-select: none !important;
+}

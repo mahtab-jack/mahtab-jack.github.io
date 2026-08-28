@@ -1,0 +1,42 @@
+/* =============================================
+   DESKTOP ROOT
+   ============================================= */
+
+.desktop-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.desktop-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* bottom is set inline via TASKBAR_HEIGHT */
+  overflow: hidden;
+
+  /* Retro teal desktop wallpaper */
+  background-color: #008080;
+  background-image:
+    linear-gradient(45deg, #007070 25%, transparent 25%),
+    linear-gradient(-45deg, #007070 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #007070 75%),
+    linear-gradient(-45deg, transparent 75%, #007070 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+}
+
+/* --- Icon grid --- */
+.desktop-icons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: calc(100% - 24px);
+  align-content: flex-start;
+}
