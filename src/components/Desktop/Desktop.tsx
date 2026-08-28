@@ -62,7 +62,7 @@ export default function Desktop({
 }: DesktopProps) {
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; items: MenuItem[] } | null>(null);
   const [selectionBox, setSelectionBox] = useState<SelectionBox | null>(null);
-  // Default to user's custom wallpaper: public/files/wallpaper.jpg
+  // Default to custom wallpaper: public/files/wallpaper.jpg
   const [wallpaper, setWallpaper] = useState<'custom' | 'teal' | 'navy' | 'matrix'>('custom');
   const desktopAreaRef = useRef<HTMLDivElement>(null);
 
@@ -218,6 +218,15 @@ export default function Desktop({
     height: Math.abs(selectionBox.currentY - selectionBox.startY),
   } : null;
 
+  // Wallpaper inline background styling so relative document path always loads
+  const wallpaperInlineStyle: React.CSSProperties = {
+    bottom: TASKBAR_HEIGHT,
+    backgroundImage: wallpaper === 'custom' ? 'url("./files/wallpaper.jpg")' : undefined,
+    backgroundSize: wallpaper === 'custom' ? 'cover' : undefined,
+    backgroundPosition: wallpaper === 'custom' ? 'center' : undefined,
+    backgroundRepeat: wallpaper === 'custom' ? 'no-repeat' : undefined,
+  };
+
   return (
     <div
       className="desktop-root"
@@ -230,7 +239,7 @@ export default function Desktop({
       <div
         ref={desktopAreaRef}
         className={`desktop-area wallpaper-${wallpaper}`}
-        style={{ bottom: TASKBAR_HEIGHT }}
+        style={wallpaperInlineStyle}
       >
         {/* Selection Rectangle */}
         {selectionBox && boxStyle && boxStyle.width > 2 && (

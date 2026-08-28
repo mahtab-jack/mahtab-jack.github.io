@@ -17,7 +17,13 @@ export default function App() {
     focusWindow,
     moveWindow,
     resizeWindow,
+    startLoginSequence,
   } = useWindowManager();
+
+  const handleUnlock = () => {
+    setIsLocked(false);
+    startLoginSequence();
+  };
 
   const focusedWindowId = windows
     .filter(w => !w.isMinimized)
@@ -27,9 +33,9 @@ export default function App() {
     <>
       {isLocked ? (
         <LockScreen
-          onUnlock={() => setIsLocked(false)}
+          onUnlock={handleUnlock}
           username="Mahtab Jack"
-          avatarUrl="./files/lockscreen.png"
+          avatarUrl="https://avatars.githubusercontent.com/u/111902189?v=4"
         />
       ) : (
         <Desktop

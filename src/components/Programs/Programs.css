@@ -235,36 +235,75 @@
   border: 2px solid;
   border-color: #808080 #fff #fff #808080;
   box-shadow: inset 1px 1px 0 #404040;
-  padding: 10px;
+  padding: 8px 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+}
+
+.media-screen-layout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.media-art-frame {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #00ff00;
+  background: #001500;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-art-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .media-screen-header {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .media-track-title {
   color: #00ff00;
   font-family: "Courier New", Courier, monospace;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .media-track-artist {
   color: #a0ffa0;
   font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.media-track-album {
+  color: #60c060;
+  font-size: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .media-visualizer {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 3px;
-  height: 50px;
+  gap: 2px;
+  height: 40px;
   padding: 2px;
   background: #001500;
   border: 1px solid #004400;
@@ -273,17 +312,23 @@
 .viz-bar {
   flex: 1;
   background: linear-gradient(to top, #00aa00 0%, #00ff00 70%, #ffff00 90%, #ff0000 100%);
-  transition: height 0.1s ease-out;
+  transition: height 0.08s ease-out;
   min-height: 4px;
 }
 
 .media-time-readout {
   display: flex;
-  justify-content: flex-end;
-  gap: 4px;
+  justify-content: space-between;
+  align-items: center;
   font-family: "Courier New", Courier, monospace;
-  font-size: 12px;
+  font-size: 11px;
   color: #00ff00;
+}
+
+.media-format-badge {
+  color: #ffff00;
+  font-weight: bold;
+  font-size: 10px;
 }
 
 .media-seek-bar-container {
@@ -299,26 +344,52 @@
 .media-controls-row {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
 .media-ctrl-btn {
-  padding: 4px 10px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.media-playlist-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 130px;
+}
+
+.playlist-label {
+  font-size: 13px;
+}
+
+.media-playlist-select {
+  flex: 1;
+  background: #ffffff;
+  border: 2px solid;
+  border-color: #808080 #fff #fff #808080;
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+  border-radius: 0;
+  cursor: pointer;
 }
 
 .media-volume-group {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
 }
 
 .volume-icon {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .media-volume-slider {
-  width: 70px;
+  width: 60px;
   cursor: pointer;
   accent-color: #000080;
 }
@@ -331,25 +402,46 @@
   box-shadow: inset 1px 1px 0 #404040;
   display: flex;
   flex-direction: column;
+  min-height: 120px;
 }
 
-.playlist-header {
+.playlist-header-row {
   background: #d0d0d0;
   padding: 3px 6px;
+  border-bottom: 1px solid #808080;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.playlist-header-title {
   font-weight: bold;
   font-size: 11px;
-  border-bottom: 1px solid #808080;
+  white-space: nowrap;
+}
+
+.playlist-search-input {
+  background: #fff;
+  border: 1px solid #808080;
+  padding: 1px 4px;
+  font-family: inherit;
+  font-size: 10px;
+  width: 140px;
+  outline: none;
 }
 
 .playlist-list {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  max-height: 160px;
 }
 
 .playlist-row {
   display: flex;
   align-items: center;
-  padding: 4px 8px;
+  gap: 6px;
+  padding: 3px 6px;
   font-size: 11px;
   cursor: pointer;
   border-bottom: 1px solid #f0f0f0;
@@ -365,16 +457,37 @@
 }
 
 .playlist-row-num {
-  width: 20px;
+  width: 24px;
   font-weight: bold;
+  flex-shrink: 0;
 }
 
 .playlist-row-name {
-  flex: 1;
+  flex: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+}
+
+.playlist-row-artist {
+  flex: 2;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 10px;
+}
+
+.playlist-row.active .playlist-row-artist {
+  color: #c0d8ff;
 }
 
 .playlist-row-dur {
   font-family: "Courier New", Courier, monospace;
+  font-size: 10px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 /* =============================================

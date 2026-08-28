@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './LockScreen.css';
 
 interface LockScreenProps {
@@ -10,15 +10,17 @@ interface LockScreenProps {
 export default function LockScreen({
   onUnlock,
   username = 'Mahtab Jack',
-  avatarUrl = './files/lockscreen.png',
+  avatarUrl = 'https://avatars.githubusercontent.com/u/111902189?v=4',
 }: LockScreenProps) {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [password, setPassword] = useState('');
 
-  const handleUserClick = () => {
+  const handleLogin = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setIsLoggingIn(true);
     setTimeout(() => {
       onUnlock();
-    }, 400);
+    }, 450);
   };
 
   return (
@@ -47,28 +49,57 @@ export default function LockScreen({
 
         {/* Right Section: User Login Box */}
         <div className="lockscreen-right">
-          <button
+          <form
             className={`lockscreen-user-card ${isLoggingIn ? 'logging-in' : ''}`}
-            onClick={handleUserClick}
-            aria-label={`Log in as ${username}`}
+            onSubmit={handleLogin}
           >
-            <div className="lockscreen-avatar-frame">
+            <div
+              className="lockscreen-avatar-frame"
+              onClick={() => handleLogin()}
+              title="Click to Log In"
+            >
               <img
                 src={avatarUrl}
                 alt={username}
                 className="lockscreen-avatar-img"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://avatars.githubusercontent.com/u/111902189?v=4';
+                  (e.target as HTMLImageElement).src = './files/lockscreen.png';
                 }}
               />
             </div>
+
             <div className="lockscreen-user-details">
-              <span className="lockscreen-username">{username}</span>
+              <span className="lockscreen-username" onClick={() => handleLogin()}>
+                {username}
+              </span>
+
+              {/* Password / Login Button Row */}
+              <div className="lockscreen-login-row">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Type password (optional)"
+                  className="lockscreen-password-input"
+                  disabled={isLoggingIn}
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="lockscreen-login-btn"
+                  disabled={isLoggingIn}
+                  title="Log In"
+                >
+                  <span className="login-arrow">&#x2794;</span>
+                  <span className="login-text">Log In</span>
+                </button>
+              </div>
+
               <span className="lockscreen-user-status">
                 {isLoggingIn ? 'Loading your personal settings...' : 'Developer / Portfolio'}
               </span>
             </div>
-          </button>
+          </form>
         </div>
       </div>
 

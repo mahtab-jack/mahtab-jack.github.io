@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { WindowState, ProgramDefinition } from '../types';
 import { TASKBAR_HEIGHT, PROGRAMS } from '../types';
 
@@ -24,8 +24,8 @@ function computeInitialPositionAndSize(
     };
   }
 
-  // Generous left margin (110px) so desktop icons on the left are completely visible!
-  const leftBase = 110;
+  // Generous left margin (180px - extra 70px) so desktop icons on the left are completely unobstructed!
+  const leftBase = 180;
   const topBase = 30;
   const offset = 30;
 
@@ -49,57 +49,73 @@ function computeInitialPositionAndSize(
 export function useWindowManager() {
   const [windows, setWindows] = useState<WindowState[]>([]);
   const windowIdCounter = useRef(0);
+  const hasInitializedBootSequence = useRef(false);
 
-  // Auto-open MS-DOS Terminal and Music Player on initial desktop load
-  useEffect(() => {
-    if (windows.length === 0 && windowIdCounter.current === 0) {
-      const initialWindows: WindowState[] = [];
+  // Triggered when user unlocks the lock screen
+  const startLoginSequence = useCallback(() => {
+    if (hasInitializedBootSequence.current) return;
+    hasInitializedBootSequence.current = true;
 
-      // 1. MS-DOS Terminal
+    // 1. After 2 seconds: Open MS-DOS Terminal
+    setTimeout(() => {
       const terminalProg = PROGRAMS.find(p => p.id === 'terminal');
       if (terminalProg) {
-        windowIdCounter.current++;
-        const { position, size, minSize } = computeInitialPositionAndSize(terminalProg, 0);
-        initialWindows.push({
-          id: `win-${windowIdCounter.current}`,
-          programId: terminalProg.id,
-          title: terminalProg.title,
-          iconId: terminalProg.iconId,
-          position: { x: position.x, y: position.y },
-          size,
-          minSize,
-          zIndex: ++nextZIndex,
-          isMinimized: false,
-          isMaximized: false,
+        setWindows(prev => {
+          if (prev.some(w => w.programId === 'terminal')) return prev;
+          windowIdCounter.current++;
+          const { position, size, minSize } = computeInitialPositionAndSize(terminalProg, 0);
+          return [
+            ...prev,
+            {
+              id: `win-${windowIdCounter.current}`,
+              programId: terminalProg.id,
+              title: terminalProg.title,
+              iconId: terminalProg.iconId,
+              position,
+              size,
+              minSize,
+              zIndex: ++nextZIndex,
+              isMinimized: false,
+              isMaximized: false,
+            },
+          ];
         });
       }
+    }, 2000);
 
-      // 2. Media Player (SadLofi.m4a)
+    // 2. After 3 seconds: Open Media Player (SadLofi & Playlists)
+    setTimeout(() => {
       const musicProg = PROGRAMS.find(p => p.id === 'music');
-      if (musicProg && window.innerWidth >= 800) {
-        windowIdCounter.current++;
-        const { size, minSize } = computeInitialPositionAndSize(musicProg, 1);
-        initialWindows.push({
-          id: `win-${windowIdCounter.current}`,
-          programId: musicProg.id,
-          title: musicProg.title,
-          iconId: musicProg.iconId,
-          position: { x: Math.max(140, window.innerWidth - size.width - 30), y: 30 },
-          size,
-          minSize,
-          zIndex: ++nextZIndex,
-          isMinimized: false,
-          isMaximized: false,
+      if (musicProg) {
+        setWindows(prev => {
+          if (prev.some(w => w.programId === 'music')) return prev;
+          windowIdCounter.current++;
+          const { size, minSize } = computeInitialPositionAndSize(musicProg, 1);
+          const x = window.innerWidth >= 900
+            ? Math.max(200, window.innerWidth - size.width - 40)
+            : 180;
+          return [
+            ...prev,
+            {
+              id: `win-${windowIdCounter.current}`,
+              programId: musicProg.id,
+              title: musicProg.title,
+              iconId: musicProg.iconId,
+              position: { x, y: 40 },
+              size,
+              minSize,
+              zIndex: ++nextZIndex,
+              isMinimized: false,
+              isMaximized: false,
+            },
+          ];
         });
       }
-
-      setWindows(initialWindows);
-    }
+    }, 3000);
   }, []);
 
   const openWindow = useCallback((program: ProgramDefinition, initialData?: any) => {
     setWindows(prev => {
-      // If already open (and not notepad or photo viewer), focus it and unminimize
       const existing = prev.find(w => w.programId === program.id && !['notepad', 'image-viewer'].includes(program.id));
       if (existing) {
         nextZIndex++;
@@ -222,5 +238,6 @@ export function useWindowManager() {
     focusWindow,
     moveWindow,
     resizeWindow,
+    startLoginSequence,
   };
 }
