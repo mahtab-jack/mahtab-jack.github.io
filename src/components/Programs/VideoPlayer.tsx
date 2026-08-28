@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './Programs.css';
 
 interface VideoPlayerProps {
@@ -11,9 +11,27 @@ export default function VideoPlayer({
   videoTitle = 'Wildlife Windows 7 Sample Video.mp4',
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  // When video player mounts or plays, pause music player automatically
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('pause-music-player'));
+
+    const handlePauseVideo = () => {
+      const v = videoRef.current;
+      if (v) {
+        v.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    window.addEventListener('pause-video-player', handlePauseVideo);
+    return () => {
+      window.removeEventListener('pause-video-player', handlePauseVideo);
+    };
+  }, []);
 
   const togglePlay = () => {
     const v = videoRef.current;
@@ -22,8 +40,18 @@ export default function VideoPlayer({
       v.pause();
       setIsPlaying(false);
     } else {
+      window.dispatchEvent(new CustomEvent('pause-music-player'));
       v.play().then(() => setIsPlaying(true)).catch(() => {});
     }
+  };
+
+  const handlePlay = () => {
+    window.dispatchEvent(new CustomEvent('pause-music-player'));
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
   };
 
   const handleTimeUpdate = () => {
@@ -76,11 +104,15 @@ export default function VideoPlayer({
           ref={videoRef}
           src={videoSrc}
           className="win-video-element"
+          onPlay={handlePlay}
+          onPause={handlePause}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onClick={togglePlay}
           controls={false}
           autoPlay
+          loop
+          playsInline
         />
       </div>
 
@@ -108,7 +140,7 @@ export default function VideoPlayer({
 
       {/* Status Bar */}
       <div className="notepad-status-bar">
-        <span className="status-cell flex-1">{videoTitle}</span>
+        <span className="status-cell flex-1">{videoTitle} (Looping)</span>
         <span className="status-cell">{isPlaying ? 'Playing' : 'Paused'}</span>
       </div>
     </div>

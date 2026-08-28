@@ -24,10 +24,10 @@ function computeInitialPositionAndSize(
     };
   }
 
-  // Generous left margin (180px - extra 70px) so desktop icons on the left are completely unobstructed!
-  const leftBase = 180;
-  const topBase = 30;
-  const offset = 30;
+  // Generous left margin (330px - 180px + 150px extra) so ALL desktop shortcut columns are completely visible!
+  const leftBase = 330;
+  const topBase = 25;
+  const offset = 25;
 
   const maxAvailableWidth = window.innerWidth - leftBase - 20;
   const width = Math.min(program.defaultSize.width, maxAvailableWidth);
@@ -36,8 +36,8 @@ function computeInitialPositionAndSize(
   const maxX = Math.max(leftBase, window.innerWidth - width - 20);
   const maxY = Math.max(20, window.innerHeight - TASKBAR_HEIGHT - height - 20);
 
-  const x = Math.min(leftBase + (index * offset) % 200, maxX);
-  const y = Math.min(topBase + (index * offset) % 160, maxY);
+  const x = Math.min(leftBase + (index * offset) % 180, maxX);
+  const y = Math.min(topBase + (index * offset) % 150, maxY);
 
   return {
     position: { x, y },
@@ -91,9 +91,9 @@ export function useWindowManager() {
           if (prev.some(w => w.programId === 'music')) return prev;
           windowIdCounter.current++;
           const { size, minSize } = computeInitialPositionAndSize(musicProg, 1);
-          const x = window.innerWidth >= 900
-            ? Math.max(200, window.innerWidth - size.width - 40)
-            : 180;
+          const x = window.innerWidth >= 1050
+            ? Math.max(340, window.innerWidth - size.width - 30)
+            : 330;
           return [
             ...prev,
             {
@@ -101,7 +101,7 @@ export function useWindowManager() {
               programId: musicProg.id,
               title: musicProg.title,
               iconId: musicProg.iconId,
-              position: { x, y: 40 },
+              position: { x, y: 30 },
               size,
               minSize,
               zIndex: ++nextZIndex,
@@ -112,6 +112,33 @@ export function useWindowManager() {
         });
       }
     }, 3000);
+
+    // 3. After 15 seconds: Open Wildlife Video Player
+    setTimeout(() => {
+      const videoProg = PROGRAMS.find(p => p.id === 'video');
+      if (videoProg) {
+        setWindows(prev => {
+          if (prev.some(w => w.programId === 'video')) return prev;
+          windowIdCounter.current++;
+          const { position, size, minSize } = computeInitialPositionAndSize(videoProg, 2);
+          return [
+            ...prev,
+            {
+              id: `win-${windowIdCounter.current}`,
+              programId: videoProg.id,
+              title: videoProg.title,
+              iconId: videoProg.iconId,
+              position: { x: Math.max(330, position.x + 40), y: Math.max(30, position.y + 40) },
+              size,
+              minSize,
+              zIndex: ++nextZIndex,
+              isMinimized: false,
+              isMaximized: false,
+            },
+          ];
+        });
+      }
+    }, 15000);
   }, []);
 
   const openWindow = useCallback((program: ProgramDefinition, initialData?: any) => {

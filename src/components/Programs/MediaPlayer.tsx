@@ -1,7 +1,70 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import type { Song, PlaylistInfo } from '../../data/playlists';
 import { AVAILABLE_PLAYLISTS, fetchPlaylistSongs, SAD_LOFI_SONG } from '../../data/playlists';
 import './Programs.css';
+
+/* --- Clean SVG Audio Control Icons (No Emojis) --- */
+const PrevTrackIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+    <rect x="1" y="2" width="2" height="8" />
+    <polygon points="10,2 4,6 10,10" />
+  </svg>
+);
+
+const NextTrackIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+    <polygon points="2,2 8,6 2,10" />
+    <rect x="9" y="2" width="2" height="8" />
+  </svg>
+);
+
+const PlayIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+    <polygon points="3,2 10,6 3,10" />
+  </svg>
+);
+
+const PauseIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+    <rect x="2" y="2" width="3" height="8" />
+    <rect x="7" y="2" width="3" height="8" />
+  </svg>
+);
+
+const StopIcon = () => (
+  <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor">
+    <rect x="1" y="1" width="8" height="8" />
+  </svg>
+);
+
+const FolderIcon = () => (
+  <svg width="14" height="12" viewBox="0 0 14 12" fill="none">
+    <path d="M1 2H5L6.5 4H13V11H1V2Z" fill="#E8B000" stroke="#000000" strokeWidth="0.8" />
+  </svg>
+);
+
+const LoopIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.2">
+    <path d="M2 4h6a2 2 0 0 1 2 2v1" />
+    <polyline points="1 2 2 4 4 3" fill="currentColor" />
+    <path d="M10 8H4a2 2 0 0 1-2-2V5" />
+    <polyline points="11 10 10 8 8 9" fill="currentColor" />
+  </svg>
+);
+
+const VolumeIcon = ({ muted }: { muted: boolean }) => (
+  <svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor">
+    <polygon points="1,4 4,4 7,1 7,11 4,8 1,8" />
+    {!muted ? (
+      <>
+        <path d="M9 3.5a4 4 0 0 1 0 5" stroke="currentColor" strokeWidth="1.2" fill="none" />
+        <path d="M11 2a6.5 6.5 0 0 1 0 8" stroke="currentColor" strokeWidth="1.2" fill="none" />
+      </>
+    ) : (
+      <line x1="9" y1="3" x2="13" y2="9" stroke="#FF0000" strokeWidth="1.5" />
+    )}
+  </svg>
+);
 
 export default function MediaPlayer() {
   const [selectedPlaylist, setSelectedPlaylist] = useState<PlaylistInfo>(AVAILABLE_PLAYLISTS[0]);
@@ -18,17 +81,45 @@ export default function MediaPlayer() {
 
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Load songs when playlist changes
+  // Pause music player when video player starts playing
+  useEffect(() => {
+    const handlePauseMusic = () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    window.addEventListener('pause-music-player', handlePauseMusic);
+    return () => {
+      window.removeEventListener('pause-music-player', handlePauseMusic);
+    };
+  }, []);
+
+  // Load songs when playlist changes and play first song instantly
   useEffect(() => {
     let isCancelled = false;
     setIsLoadingSongs(true);
+
     fetchPlaylistSongs(selectedPlaylist).then((songs) => {
       if (!isCancelled) {
-        setPlaylistSongs(songs.length > 0 ? songs : [SAD_LOFI_SONG]);
+        const loaded = songs.length > 0 ? songs : [SAD_LOFI_SONG];
+        setPlaylistSongs(loaded);
         setCurrentSongIndex(0);
         setIsLoadingSongs(false);
+
+        // Instantly play first song in newly selected playlist
+        const audio = audioRef.current;
+        if (audio && loaded[0]) {
+          window.dispatchEvent(new CustomEvent('pause-video-player'));
+          audio.src = loaded[0].url;
+          audio.load();
+          audio.play().then(() => setIsPlaying(true)).catch(() => {});
+        }
       }
     });
+
     return () => {
       isCancelled = true;
     };
@@ -36,21 +127,19 @@ export default function MediaPlayer() {
 
   const currentSong: Song = playlistSongs[currentSongIndex] || SAD_LOFI_SONG;
 
-  // Auto-play when current song changes
+  // Play immediately when currentSongIndex changes
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !currentSong) return;
     audio.volume = isMuted ? 0 : volume;
 
-    const playPromise = audio.play();
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => setIsPlaying(true))
-        .catch(() => {
-          setIsPlaying(false);
-        });
+    if (audio.src !== currentSong.url) {
+      window.dispatchEvent(new CustomEvent('pause-video-player'));
+      audio.src = currentSong.url;
+      audio.load();
+      audio.play().then(() => setIsPlaying(true)).catch(() => {});
     }
-  }, [currentSongIndex, selectedPlaylist, isMuted, volume]);
+  }, [currentSongIndex, isMuted, volume]);
 
   const togglePlay = () => {
     const audio = audioRef.current;
@@ -60,6 +149,7 @@ export default function MediaPlayer() {
       audio.pause();
       setIsPlaying(false);
     } else {
+      window.dispatchEvent(new CustomEvent('pause-video-player'));
       audio.play().then(() => setIsPlaying(true)).catch(() => {});
     }
   };
@@ -220,24 +310,24 @@ export default function MediaPlayer() {
           />
         </div>
 
-        {/* Media Control Row (Prev, Play, Stop, Next, Playlist Dropdown, Volume) */}
+        {/* Media Control Row (SVG Icons Only - No Emojis) */}
         <div className="media-controls-row">
           <button className="btn-retro media-ctrl-btn" onClick={handlePrev} title="Previous Track">
-            ⏮
+            <PrevTrackIcon />
           </button>
           <button className="btn-retro media-ctrl-btn" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
-            {isPlaying ? '❚❚' : '▶'}
+            {isPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <button className="btn-retro media-ctrl-btn" onClick={handleStop} title="Stop">
-            ■
+            <StopIcon />
           </button>
           <button className="btn-retro media-ctrl-btn" onClick={handleNext} title="Next Track">
-            ⏭
+            <NextTrackIcon />
           </button>
 
           {/* Playlist Selector Dropdown */}
           <div className="media-playlist-select-wrapper">
-            <span className="playlist-label">&#x1F4C2;</span>
+            <span className="playlist-icon-label"><FolderIcon /></span>
             <select
               className="media-playlist-select"
               value={selectedPlaylist.id}
@@ -262,19 +352,18 @@ export default function MediaPlayer() {
             onClick={() => setIsLooping(!isLooping)}
             title="Loop Track"
           >
-            &#x1F501;
+            <LoopIcon />
           </button>
 
           {/* Volume Group */}
           <div className="media-volume-group">
-            <span
-              className="volume-icon"
-              style={{ cursor: 'pointer' }}
+            <button
+              className="volume-icon-btn"
               onClick={() => setIsMuted(!isMuted)}
               title={isMuted ? 'Unmute' : 'Mute'}
             >
-              {isMuted || volume === 0 ? '🔇' : '🔊'}
-            </span>
+              <VolumeIcon muted={isMuted || volume === 0} />
+            </button>
             <input
               type="range"
               min={0}
@@ -303,7 +392,7 @@ export default function MediaPlayer() {
             />
           </div>
 
-          {/* Playlist Table */}
+          {/* Playlist Table (Fills 100% height - No bottom dead space) */}
           <div className="playlist-list">
             {isLoadingSongs ? (
               <div className="loading-box">Loading playlist...</div>
@@ -317,7 +406,16 @@ export default function MediaPlayer() {
                   <div
                     key={song.id + idx}
                     className={`playlist-row ${isCurrent ? 'active' : ''}`}
-                    onClick={() => setCurrentSongIndex(actualIndex)}
+                    onClick={() => {
+                      setCurrentSongIndex(actualIndex);
+                      const audio = audioRef.current;
+                      if (audio) {
+                        window.dispatchEvent(new CustomEvent('pause-video-player'));
+                        audio.src = song.url;
+                        audio.load();
+                        audio.play().then(() => setIsPlaying(true)).catch(() => {});
+                      }
+                    }}
                   >
                     <span className="playlist-row-num">{actualIndex + 1}.</span>
                     <span className="playlist-row-name" title={`${song.title} - ${song.artist}`}>

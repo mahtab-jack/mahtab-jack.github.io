@@ -73,6 +73,7 @@
   display: flex;
   gap: 2px;
   flex-shrink: 0;
+  align-items: center;
 }
 
 .win-btn {
@@ -93,6 +94,7 @@
   font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   border-radius: 0;
   outline: none;
+  position: relative;
 }
 
 .win-btn:active {
@@ -105,15 +107,53 @@
   outline-offset: -3px;
 }
 
-.win-btn-glyph {
-  line-height: 1;
+/* Vertically and horizontally centered minimize line */
+.win-minimize-line {
+  width: 7px;
+  height: 2px;
+  background: #000000;
   display: block;
-  margin-top: -1px;
 }
 
-.win-btn-close .win-btn-glyph {
-  font-size: 11px;
+/* Maximize box */
+.win-maximize-rect {
+  width: 9px;
+  height: 8px;
+  border: 1px solid #000000;
+  border-top: 2px solid #000000;
+  display: block;
+}
+
+/* Restore dual boxes */
+.win-restore-rect {
+  width: 7px;
+  height: 7px;
+  border: 1px solid #000000;
+  border-top: 2px solid #000000;
+  position: relative;
+  display: block;
+}
+
+.win-restore-rect::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 5px;
+  height: 5px;
+  border: 1px solid #000000;
+  border-bottom: none;
+  border-left: none;
+}
+
+/* Close X */
+.win-close-x {
+  font-size: 9px;
   font-weight: 900;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* --- Content Area --- */
@@ -126,6 +166,8 @@
   box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
   overflow: auto;
   user-select: text;
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- Resize Handles --- */

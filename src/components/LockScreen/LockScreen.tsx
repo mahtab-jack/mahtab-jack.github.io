@@ -12,11 +12,21 @@ export default function LockScreen({
   username = 'Mahtab Jack',
   avatarUrl = 'https://avatars.githubusercontent.com/u/111902189?v=4',
 }: LockScreenProps) {
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const handleLogin = (e?: React.FormEvent | React.MouseEvent) => {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+
+    if (password.trim() !== '123') {
+      setErrorMessage('Incorrect password. Enter 123 to log in.');
+      return;
+    }
+
+    setErrorMessage(null);
     setIsLoggingIn(true);
     setTimeout(() => {
       onUnlock();
@@ -49,13 +59,10 @@ export default function LockScreen({
 
         {/* Right Section: User Login Box */}
         <div className="lockscreen-right">
-          <form
-            className={`lockscreen-user-card ${isLoggingIn ? 'logging-in' : ''}`}
-            onSubmit={handleLogin}
-          >
+          <div className={`lockscreen-user-card ${isLoggingIn ? 'logging-in' : ''}`}>
             <div
               className="lockscreen-avatar-frame"
-              onClick={() => handleLogin()}
+              onClick={handleLogin}
               title="Click to Log In"
             >
               <img
@@ -69,7 +76,7 @@ export default function LockScreen({
             </div>
 
             <div className="lockscreen-user-details">
-              <span className="lockscreen-username" onClick={() => handleLogin()}>
+              <span className="lockscreen-username" onClick={handleLogin}>
                 {username}
               </span>
 
@@ -78,14 +85,21 @@ export default function LockScreen({
                 <input
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Type password (optional)"
-                  className="lockscreen-password-input"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errorMessage) setErrorMessage(null);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleLogin(e);
+                  }}
+                  placeholder="Password (123)"
+                  className={`lockscreen-password-input ${errorMessage ? 'input-error' : ''}`}
                   disabled={isLoggingIn}
                   autoFocus
                 />
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleLogin}
                   className="lockscreen-login-btn"
                   disabled={isLoggingIn}
                   title="Log In"
@@ -95,11 +109,16 @@ export default function LockScreen({
                 </button>
               </div>
 
-              <span className="lockscreen-user-status">
-                {isLoggingIn ? 'Loading your personal settings...' : 'Developer / Portfolio'}
-              </span>
+              {/* Password Hint & Status */}
+              {errorMessage ? (
+                <span className="lockscreen-error-text">{errorMessage}</span>
+              ) : (
+                <span className="lockscreen-password-hint">
+                  {isLoggingIn ? 'Loading personal settings...' : 'Password: 123'}
+                </span>
+              )}
             </div>
-          </form>
+          </div>
         </div>
       </div>
 

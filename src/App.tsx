@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Desktop from './components/Desktop/Desktop';
 import LockScreen from './components/LockScreen/LockScreen';
 import { useWindowManager } from './hooks/useWindowManager';
@@ -6,6 +6,15 @@ import './App.css';
 
 export default function App() {
   const [isLocked, setIsLocked] = useState(true);
+
+  // Preload wallpaper and user avatar early to prevent any black screen flash
+  useEffect(() => {
+    const preloadWallpaper = new Image();
+    preloadWallpaper.src = './files/wallpaper.jpg';
+
+    const preloadAvatar = new Image();
+    preloadAvatar.src = 'https://avatars.githubusercontent.com/u/111902189?v=4';
+  }, []);
 
   const {
     windows,

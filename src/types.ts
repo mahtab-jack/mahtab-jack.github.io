@@ -52,8 +52,8 @@ export const PROGRAMS: ProgramDefinition[] = [
     id: 'music',
     title: 'Media Player (SadLofi)',
     iconId: 'music',
-    defaultSize: { width: 440, height: 380 },
-    minSize: { width: 320, height: 280 },
+    defaultSize: { width: 500, height: 520 },
+    minSize: { width: 340, height: 420 },
     category: 'media',
   },
   {

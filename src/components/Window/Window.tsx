@@ -100,21 +100,25 @@ export default function Window({
             onClick={(e) => { e.stopPropagation(); onMinimize(win.id); }}
             aria-label="Minimize"
           >
-            <span className="win-btn-glyph">_</span>
+            <span className="win-minimize-line" />
           </button>
           <button
             className="win-btn win-btn-maximize"
             onClick={(e) => { e.stopPropagation(); onMaximize(win.id); }}
             aria-label={win.isMaximized ? 'Restore' : 'Maximize'}
           >
-            <span className="win-btn-glyph">{win.isMaximized ? '\u{29C9}' : '\u25A1'}</span>
+            {win.isMaximized ? (
+              <span className="win-restore-rect" />
+            ) : (
+              <span className="win-maximize-rect" />
+            )}
           </button>
           <button
             className="win-btn win-btn-close"
             onClick={(e) => { e.stopPropagation(); onClose(win.id); }}
             aria-label="Close"
           >
-            <span className="win-btn-glyph">X</span>
+            <span className="win-close-x">✕</span>
           </button>
         </div>
       </div>
